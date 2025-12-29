@@ -1,0 +1,216 @@
+# Ministry Manager - Cursor Rules
+
+## Project Overview
+Ministry Manager is a mobile-first web application for church ministry scheduling and management. It helps church managers organize volunteers, create schedules, and manage song lyrics for worship services.
+
+## Tech Stack
+- **Framework**: Next.js 16 with App Router (React Server Components enabled)
+- **Language**: TypeScript (strict mode)
+- **UI Components**: shadcn/ui (new-york style)
+- **Styling**: Tailwind CSS 4
+- **Icons**: Lucide React
+- **Database**: Supabase (PostgreSQL) - *to be integrated later*
+- **Authentication**: Supabase Auth - *to be integrated later*
+
+## Development Phase
+Currently in **Frontend-Only Phase** using mock/dummy data. Backend integration will come later.
+
+## Mobile-First Design Principles
+This app prioritizes mobile users. Follow these guidelines:
+
+### Layout
+- Design for 375px width first, then scale up
+- Use responsive breakpoints: `sm:` (640px), `md:` (768px), `lg:` (1024px)
+- Bottom navigation for mobile, sidebar for desktop
+- Touch-friendly tap targets (minimum 44x44px)
+- Avoid hover-only interactions
+
+### Typography
+- Base font size: 16px minimum for body text
+- Use relative units (rem) for scalability
+- Ensure readable line heights (1.5-1.75 for body)
+
+### Spacing
+- Generous padding for touch interfaces
+- Use Tailwind's spacing scale consistently
+- Safe area insets for mobile browsers
+
+## Code Conventions
+
+### File Structure
+```
+app/
+├── (auth)/           # Auth routes (login, signup)
+├── (dashboard)/      # Protected dashboard routes
+├── layout.tsx
+├── page.tsx
+└── globals.css
+
+components/
+├── ui/               # shadcn components
+├── layout/           # Layout components (nav, sidebar, header)
+├── forms/            # Form components
+├── schedule/         # Schedule-related components
+├── people/           # People management components
+├── calendar/         # Calendar components
+└── lyrics/           # Song lyrics components
+
+lib/
+├── utils.ts          # Utility functions
+├── types.ts          # TypeScript type definitions
+├── data/             # Mock data for development
+│   ├── people.ts
+│   ├── ministries.ts
+│   ├── schedules.ts
+│   └── songs.ts
+└── hooks/            # Custom React hooks
+
+```
+
+### Naming Conventions
+- Components: PascalCase (e.g., `PersonCard.tsx`)
+- Utilities/hooks: camelCase (e.g., `useSchedule.ts`)
+- Types/Interfaces: PascalCase with descriptive names (e.g., `MinistryAssignment`)
+- Files: kebab-case for routes, PascalCase for components
+
+### Component Guidelines
+- Use Server Components by default
+- Add `"use client"` only when needed (interactivity, hooks, browser APIs)
+- Prefer shadcn/ui components over custom implementations
+- Keep components small and focused
+- Extract reusable logic into custom hooks
+
+## Data Models
+
+### Core Types
+```typescript
+// Person - A church member who can be assigned to ministries
+interface Person {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  ministries: Ministry[];
+  isActive: boolean;
+  createdAt: Date;
+}
+
+// Ministry - A service role in the church
+type Ministry = 
+  | "musician"
+  | "usher"
+  | "multimedia"
+  | "singer"
+  | "scripture_reader"
+  | "prayer_leader"
+  | "host";
+
+// Schedule - A service schedule for a specific date
+interface Schedule {
+  id: string;
+  date: Date;
+  serviceType: "sunday_morning" | "sunday_evening" | "midweek" | "special";
+  assignments: Assignment[];
+  notes?: string;
+  createdAt: Date;
+}
+
+// Assignment - A person assigned to a ministry for a schedule
+interface Assignment {
+  id: string;
+  scheduleId: string;
+  personId: string;
+  ministry: Ministry;
+  confirmed: boolean;
+}
+
+// Song - A worship song with lyrics
+interface Song {
+  id: string;
+  title: string;
+  artist?: string;
+  lyrics: string;
+  key?: string;
+  tempo?: string;
+  tags: string[];
+  createdAt: Date;
+}
+```
+
+## Feature Roadmap
+
+### Phase 1: Foundation (Current)
+1. [ ] Mobile navigation shell
+2. [ ] Dashboard overview page
+3. [ ] People list and management
+
+### Phase 2: Scheduling
+4. [ ] Calendar view
+5. [ ] Schedule creation
+6. [ ] Schedule generator (text output)
+
+### Phase 3: Additional Features
+7. [ ] Song lyrics database
+8. [ ] Authentication UI
+9. [ ] Settings and preferences
+
+### Phase 4: Backend Integration
+10. [ ] Supabase setup
+11. [ ] Authentication implementation
+12. [ ] Data persistence
+
+## UI/UX Guidelines
+
+### Color Theme
+- Primary: Warm gold/amber tones (already configured)
+- Use semantic colors: `primary`, `secondary`, `muted`, `destructive`
+- Maintain good contrast ratios for accessibility
+
+### Components to Use
+- Cards for content containers
+- Sheets/Drawers for mobile modals (bottom sheets)
+- Dialogs for desktop modals
+- Tabs for content organization
+- Command palette for search
+- Toast for notifications
+
+### Animations
+- Subtle, purposeful animations
+- Use `tw-animate-css` classes
+- Respect `prefers-reduced-motion`
+
+## Mock Data Strategy
+During frontend development:
+- Store mock data in `lib/data/` directory
+- Use TypeScript for type safety
+- Simulate API delays with `setTimeout` when needed
+- Structure data to match future Supabase schema
+
+## Best Practices
+1. **Accessibility**: Use semantic HTML, ARIA labels, keyboard navigation
+2. **Performance**: Lazy load images, minimize client-side JS
+3. **SEO**: Use proper meta tags, semantic structure
+4. **Error Handling**: Graceful error states, loading skeletons
+5. **Testing**: Component isolation for easy testing later
+
+## Common Commands
+```bash
+# Development
+npm run dev
+
+# Build
+npm run build
+
+# Add shadcn component
+npx shadcn@latest add [component-name]
+```
+
+## Notes for AI Assistant
+- Always prioritize mobile-first responsive design
+- Use existing shadcn components before creating custom ones
+- Follow the established color theme and design system
+- Keep the codebase simple and maintainable
+- Add proper TypeScript types for all data
+- Create reusable components when patterns emerge
+- Use Server Components by default, Client Components only when necessary
+
