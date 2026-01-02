@@ -36,13 +36,13 @@ export function ExemptionManagerDialog({
   );
 
   // Get counts
-  const exemptCount = people.filter((p) => p.isExemptFromAutoSchedule).length;
-  const activeCount = people.filter((p) => !p.isExemptFromAutoSchedule).length;
+  const exemptCount = people.filter((p) => p.isExemptFromAutoSchedule ?? false).length;
+  const activeCount = people.filter((p) => !(p.isExemptFromAutoSchedule ?? false)).length;
 
   // Quick actions
   const exemptAll = () => {
     people.forEach((person) => {
-      if (!person.isExemptFromAutoSchedule) {
+      if (!(person.isExemptFromAutoSchedule ?? false)) {
         onToggleExemption(person.id);
       }
     });
@@ -50,7 +50,7 @@ export function ExemptionManagerDialog({
 
   const clearAllExemptions = () => {
     people.forEach((person) => {
-      if (person.isExemptFromAutoSchedule) {
+      if (person.isExemptFromAutoSchedule ?? false) {
         onToggleExemption(person.id);
       }
     });
@@ -140,12 +140,12 @@ export function ExemptionManagerDialog({
                   key={person.id}
                   className={cn(
                     "flex items-start gap-3 p-4 hover:bg-muted/50 transition-colors",
-                    person.isExemptFromAutoSchedule && "bg-orange-50/50 dark:bg-orange-950/10"
+                    (person.isExemptFromAutoSchedule ?? false) && "bg-orange-50/50 dark:bg-orange-950/10"
                   )}
                 >
                   <Checkbox
                     id={`exempt-${person.id}`}
-                    checked={person.isExemptFromAutoSchedule}
+                    checked={person.isExemptFromAutoSchedule ?? false}
                     onCheckedChange={() => onToggleExemption(person.id)}
                     className="mt-1"
                   />
@@ -157,7 +157,7 @@ export function ExemptionManagerDialog({
                       >
                         {person.name}
                       </label>
-                      {person.isExemptFromAutoSchedule && (
+                      {(person.isExemptFromAutoSchedule ?? false) && (
                         <Badge
                           variant="outline"
                           className="gap-1 border-orange-500 text-orange-600 dark:text-orange-400"

@@ -27,7 +27,7 @@ export default function CalendarPage() {
     setPeople(
       people.map((person) =>
         person.id === id
-          ? { ...person, isExemptFromAutoSchedule: !person.isExemptFromAutoSchedule }
+          ? { ...person, isExemptFromAutoSchedule: !(person.isExemptFromAutoSchedule ?? false) }
           : person
       )
     );

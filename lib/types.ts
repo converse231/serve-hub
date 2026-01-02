@@ -25,6 +25,7 @@ export interface Person {
   // Aliases for backwards compatibility
   isActive?: boolean;
   isExempt?: boolean;
+  isExemptFromAutoSchedule?: boolean;
   createdAt?: Date;
 }
 

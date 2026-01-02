@@ -130,7 +130,7 @@ function getAvailablePeople(
         person.isActive &&
         person.ministries.includes(ministry) &&
         (!genderFilter || person.gender === genderFilter) &&
-        (!rules.respectExemptions || !person.isExemptFromAutoSchedule) &&
+        (!rules.respectExemptions || !(person.isExemptFromAutoSchedule ?? false)) &&
         canAssign(person, ministry, date, tracker, rules)
     )
     .sort((a, b) => {

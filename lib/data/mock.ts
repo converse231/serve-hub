@@ -1,170 +1,188 @@
 // Mock data for development
 import { Person, Schedule, Song, Assignment } from "@/lib/types";
 
+// Helper to create a person with all required fields
+const createPerson = (
+  id: string,
+  name: string,
+  email: string,
+  phone: string,
+  ministries: Person["ministries"],
+  gender: Person["gender"],
+  createdAt: Date,
+  isExempt: boolean = false,
+  priority: Person["priority"] = "normal"
+): Person => {
+  const createdDate = createdAt;
+  return {
+    id,
+    church_id: "mock-church-id",
+    name,
+    email,
+    phone,
+    ministries,
+    gender,
+    is_active: true,
+    is_exempt: isExempt,
+    priority,
+    created_at: createdDate,
+    updated_at: createdDate,
+    // Aliases
+    isActive: true,
+    isExempt: isExempt,
+    isExemptFromAutoSchedule: isExempt,
+    createdAt: createdDate,
+  };
+};
+
 export const mockPeople: Person[] = [
   // Singers
-  {
-    id: "1",
-    name: "Rafael Gabriel",
-    email: "rafael@example.com",
-    phone: "+1234567890",
-    ministries: ["singer"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-01-15"),
-  },
-  {
-    id: "2",
-    name: "Jaymark Magsakay",
-    email: "jaymark@example.com",
-    phone: "+1234567891",
-    ministries: ["singer", "multimedia"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-01-20"),
-  },
-  {
-    id: "3",
-    name: "Kite Reyes",
-    email: "kite@example.com",
-    phone: "+1234567892",
-    ministries: ["singer", "musician"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-02-01"),
-  },
-  {
-    id: "4",
-    name: "Erica Mendoza",
-    email: "erica@example.com",
-    phone: "+1234567893",
-    ministries: ["singer"],
-    gender: "female",
-    isActive: true,
-    createdAt: new Date("2024-02-10"),
-  },
-  {
-    id: "5",
-    name: "Rainne Cruz",
-    email: "rainne@example.com",
-    phone: "+1234567894",
-    ministries: ["singer"],
-    gender: "female",
-    isActive: true,
-    createdAt: new Date("2024-02-15"),
-  },
-  {
-    id: "6",
-    name: "Daniel Torres",
-    email: "daniel@example.com",
-    phone: "+1234567895",
-    ministries: ["singer", "multimedia"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-02-20"),
-  },
-  {
-    id: "7",
-    name: "Leigh Garcia",
-    email: "leigh@example.com",
-    phone: "+1234567896",
-    ministries: ["singer"],
-    gender: "female",
-    isActive: true,
-    createdAt: new Date("2024-03-01"),
-  },
-  {
-    id: "8",
-    name: "Aikee Ramos",
-    email: "aikee@example.com",
-    phone: "+1234567897",
-    ministries: ["singer"],
-    gender: "female",
-    isActive: true,
-    createdAt: new Date("2024-03-05"),
-  },
-  {
-    id: "9",
-    name: "Hannah Flores",
-    email: "hannah@example.com",
-    phone: "+1234567898",
-    ministries: ["singer"],
-    gender: "female",
-    isActive: true,
-    createdAt: new Date("2024-03-10"),
-  },
-  {
-    id: "10",
-    name: "Sienna Castro",
-    email: "sienna@example.com",
-    phone: "+1234567899",
-    ministries: ["singer"],
-    gender: "female",
-    isActive: true,
-    createdAt: new Date("2024-03-15"),
-  },
+  createPerson(
+    "1",
+    "Rafael Gabriel",
+    "rafael@example.com",
+    "+1234567890",
+    ["singer"],
+    "male",
+    new Date("2024-01-15")
+  ),
+  createPerson(
+    "2",
+    "Jaymark Magsakay",
+    "jaymark@example.com",
+    "+1234567891",
+    ["singer", "multimedia"],
+    "male",
+    new Date("2024-01-20")
+  ),
+  createPerson(
+    "3",
+    "Kite Reyes",
+    "kite@example.com",
+    "+1234567892",
+    ["singer", "musician"],
+    "male",
+    new Date("2024-02-01")
+  ),
+  createPerson(
+    "4",
+    "Erica Mendoza",
+    "erica@example.com",
+    "+1234567893",
+    ["singer"],
+    "female",
+    new Date("2024-02-10")
+  ),
+  createPerson(
+    "5",
+    "Rainne Cruz",
+    "rainne@example.com",
+    "+1234567894",
+    ["singer"],
+    "female",
+    new Date("2024-02-15")
+  ),
+  createPerson(
+    "6",
+    "Daniel Torres",
+    "daniel@example.com",
+    "+1234567895",
+    ["singer", "multimedia"],
+    "male",
+    new Date("2024-02-20")
+  ),
+  createPerson(
+    "7",
+    "Leigh Garcia",
+    "leigh@example.com",
+    "+1234567896",
+    ["singer"],
+    "female",
+    new Date("2024-03-01")
+  ),
+  createPerson(
+    "8",
+    "Aikee Ramos",
+    "aikee@example.com",
+    "+1234567897",
+    ["singer"],
+    "female",
+    new Date("2024-03-05")
+  ),
+  createPerson(
+    "9",
+    "Hannah Flores",
+    "hannah@example.com",
+    "+1234567898",
+    ["singer"],
+    "female",
+    new Date("2024-03-10")
+  ),
+  createPerson(
+    "10",
+    "Sienna Castro",
+    "sienna@example.com",
+    "+1234567899",
+    ["singer"],
+    "female",
+    new Date("2024-03-15")
+  ),
   // Multimedia Team
-  {
-    id: "11",
-    name: "Tyron Aguilar",
-    email: "tyron@example.com",
-    phone: "+1234567900",
-    ministries: ["multimedia"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-01-10"),
-  },
-  {
-    id: "12",
-    name: "LJ Bautista",
-    email: "lj@example.com",
-    phone: "+1234567901",
-    ministries: ["multimedia"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-01-12"),
-  },
+  createPerson(
+    "11",
+    "Tyron Aguilar",
+    "tyron@example.com",
+    "+1234567900",
+    ["multimedia"],
+    "male",
+    new Date("2024-01-10")
+  ),
+  createPerson(
+    "12",
+    "LJ Bautista",
+    "lj@example.com",
+    "+1234567901",
+    ["multimedia"],
+    "male",
+    new Date("2024-01-12")
+  ),
   // Scripture Readers (Males)
-  {
-    id: "13",
-    name: "Marcus Diaz",
-    email: "marcus@example.com",
-    phone: "+1234567902",
-    ministries: ["scripture_reader"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-01-25"),
-  },
-  {
-    id: "14",
-    name: "David Hernandez",
-    email: "david@example.com",
-    phone: "+1234567903",
-    ministries: ["scripture_reader"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-02-05"),
-  },
-  {
-    id: "15",
-    name: "Samuel Rivera",
-    email: "samuel@example.com",
-    phone: "+1234567904",
-    ministries: ["scripture_reader"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-02-12"),
-  },
-  {
-    id: "16",
-    name: "Joshua Santos",
-    email: "joshua@example.com",
-    phone: "+1234567905",
-    ministries: ["scripture_reader"],
-    gender: "male",
-    isActive: true,
-    createdAt: new Date("2024-02-18"),
-  },
+  createPerson(
+    "13",
+    "Marcus Diaz",
+    "marcus@example.com",
+    "+1234567902",
+    ["scripture_reader"],
+    "male",
+    new Date("2024-01-25")
+  ),
+  createPerson(
+    "14",
+    "David Hernandez",
+    "david@example.com",
+    "+1234567903",
+    ["scripture_reader"],
+    "male",
+    new Date("2024-02-05")
+  ),
+  createPerson(
+    "15",
+    "Samuel Rivera",
+    "samuel@example.com",
+    "+1234567904",
+    ["scripture_reader"],
+    "male",
+    new Date("2024-02-12")
+  ),
+  createPerson(
+    "16",
+    "Joshua Santos",
+    "joshua@example.com",
+    "+1234567905",
+    ["scripture_reader"],
+    "male",
+    new Date("2024-02-18")
+  ),
 ];
 
 export const mockAssignments: Assignment[] = [
