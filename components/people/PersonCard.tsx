@@ -2,6 +2,11 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Mail, Phone, Edit, Trash2, Ban, TrendingUp, Minus, Star } from "lucide-react";
 import type { Person } from "@/lib/types";
 import { MINISTRIES } from "@/lib/constants";
@@ -65,35 +70,55 @@ export function PersonCard({ person, onEdit, onDelete, onToggleExemption }: Pers
         {/* Actions */}
         <div className="flex gap-0.5">
           {onToggleExemption && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className={cn(
-                "h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800",
-                person.isExempt && "text-orange-400 hover:text-orange-300"
-              )}
-              onClick={() => onToggleExemption(person.id)}
-              title={person.isExempt ? "Remove exemption" : "Exempt from auto-schedule"}
-            >
-              <Ban className="w-4 h-4" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn(
+                    "h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800",
+                    person.isExempt && "text-orange-400 hover:text-orange-300"
+                  )}
+                  onClick={() => onToggleExemption(person.id)}
+                >
+                  <Ban className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{person.isExempt ? "Remove exemption" : "Exempt from auto-schedule"}</p>
+              </TooltipContent>
+            </Tooltip>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800"
-            onClick={() => onEdit(person)}
-          >
-            <Edit className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-zinc-500 hover:text-red-400 hover:bg-red-500/10"
-            onClick={() => onDelete(person.id)}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800"
+                onClick={() => onEdit(person)}
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Edit person</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-zinc-500 hover:text-red-400 hover:bg-red-500/10"
+                onClick={() => onDelete(person.id)}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Delete person</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 

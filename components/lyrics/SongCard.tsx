@@ -2,6 +2,11 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Music, Edit, Trash2, Eye, Calendar } from "lucide-react";
 import type { Song } from "@/lib/types";
 import { SONG_GENRES, SONG_LANGUAGES } from "@/lib/constants";
@@ -42,30 +47,51 @@ export function SongCard({ song, onView, onEdit, onDelete }: SongCardProps) {
           )}
         </div>
         <div className="flex gap-0.5">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800"
-            onClick={() => onView(song)}
-          >
-            <Eye className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800"
-            onClick={() => onEdit(song)}
-          >
-            <Edit className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-zinc-500 hover:text-red-400 hover:bg-red-500/10"
-            onClick={() => onDelete(song.id)}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800"
+                onClick={() => onView(song)}
+              >
+                <Eye className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>View song</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800"
+                onClick={() => onEdit(song)}
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Edit song</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-zinc-500 hover:text-red-400 hover:bg-red-500/10"
+                onClick={() => onDelete(song.id)}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Delete song</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 

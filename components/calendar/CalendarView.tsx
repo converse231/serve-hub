@@ -4,6 +4,11 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, addMonths, subMonths } from "date-fns";
 import type { Schedule } from "@/lib/types";
@@ -63,12 +68,26 @@ export function CalendarView({ schedules, onDateClick, onScheduleClick }: Calend
             <Button variant="outline" size="sm" onClick={goToToday}>
               Today
             </Button>
-            <Button variant="outline" size="icon" onClick={goToPreviousMonth}>
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <Button variant="outline" size="icon" onClick={goToNextMonth}>
-              <ChevronRight className="w-4 h-4" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={goToPreviousMonth}>
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Previous month</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={goToNextMonth}>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Next month</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </CardHeader>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PersonCard } from "@/components/people/PersonCard";
+import { PersonTable } from "@/components/people/PersonTable";
 import { AddPersonDialog } from "@/components/people/AddPersonDialog";
 import { EditPersonDialog } from "@/components/people/EditPersonDialog";
 import { Input } from "@/components/ui/input";
@@ -13,11 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, Users as UsersIcon, Plus, UserCheck, Filter } from "lucide-react";
+import { Search, Users as UsersIcon, Plus, UserCheck, Filter, LayoutGrid, List } from "lucide-react";
 import type { Person, Ministry } from "@/lib/types";
 import { MINISTRIES } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export default function PeoplePage() {
   const supabase = createClient();
@@ -28,6 +30,7 @@ export default function PeoplePage() {
   const [filterMinistry, setFilterMinistry] = useState<string>("all");
   const [editingPerson, setEditingPerson] = useState<Person | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"card" | "table">("card");
 
   // Fetch church and people on mount
   useEffect(() => {
@@ -332,7 +335,7 @@ export default function PeoplePage() {
         />
       </div>
 
-      {/* Filters */}
+      {/* Filters and View Toggle */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
@@ -356,21 +359,60 @@ export default function PeoplePage() {
             ))}
           </SelectContent>
         </Select>
+        <div className="flex gap-1 rounded-lg border border-zinc-800 bg-zinc-900/50 p-1">
+          <Button
+            variant={viewMode === "card" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("card")}
+            className={cn(
+              "h-9 px-3",
+              viewMode === "card"
+                ? "bg-amber-500 text-zinc-900 hover:bg-amber-400"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+            )}
+          >
+            <LayoutGrid className="w-4 h-4 mr-2" />
+            Cards
+          </Button>
+          <Button
+            variant={viewMode === "table" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setViewMode("table")}
+            className={cn(
+              "h-9 px-3",
+              viewMode === "table"
+                ? "bg-amber-500 text-zinc-900 hover:bg-amber-400"
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+            )}
+          >
+            <List className="w-4 h-4 mr-2" />
+            Table
+          </Button>
+        </div>
       </div>
 
       {/* People List */}
       {filteredPeople.length > 0 ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredPeople.map((person) => (
-            <PersonCard
-              key={person.id}
-              person={person}
-              onEdit={handleEditClick}
-              onDelete={handleDeletePerson}
-              onToggleExemption={handleToggleExemption}
-            />
-          ))}
-        </div>
+        viewMode === "card" ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredPeople.map((person) => (
+              <PersonCard
+                key={person.id}
+                person={person}
+                onEdit={handleEditClick}
+                onDelete={handleDeletePerson}
+                onToggleExemption={handleToggleExemption}
+              />
+            ))}
+          </div>
+        ) : (
+          <PersonTable
+            people={filteredPeople}
+            onEdit={handleEditClick}
+            onDelete={handleDeletePerson}
+            onToggleExemption={handleToggleExemption}
+          />
+        )
       ) : (
         <div className="flex flex-col items-center justify-center py-16 border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/30">
           <div className="w-16 h-16 rounded-2xl bg-zinc-800/50 flex items-center justify-center mb-4">
