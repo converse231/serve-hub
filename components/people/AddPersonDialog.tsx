@@ -34,9 +34,13 @@ interface AddPersonDialogProps {
     priority?: "high" | "normal" | "low";
     ministries: Ministry[];
   }) => void;
+  children?: React.ReactNode;
 }
 
-export function AddPersonDialog({ onAddPerson }: AddPersonDialogProps) {
+export function AddPersonDialog({
+  onAddPerson,
+  children,
+}: AddPersonDialogProps) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -49,9 +53,9 @@ export function AddPersonDialog({ onAddPerson }: AddPersonDialogProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim()) return;
-    
+
     onAddPerson({
       name: formData.name,
       email: formData.email || undefined,
@@ -85,24 +89,26 @@ export function AddPersonDialog({ onAddPerson }: AddPersonDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          Add Person
-        </Button>
+        {children || (
+          <Button className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-zinc-900 font-semibold">
+            <Plus className="w-4 h-4" />
+            Add Person
+          </Button>
+        )}
       </DialogTrigger>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto bg-zinc-900 border-zinc-800 text-white">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Add New Person</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-white">Add New Person</DialogTitle>
+            <DialogDescription className="text-zinc-400">
               Add a new person to your ministry team.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">
-                Name <span className="text-destructive">*</span>
+              <Label htmlFor="name" className="text-zinc-300">
+                Name <span className="text-red-400">*</span>
               </Label>
               <Input
                 id="name"
@@ -112,12 +118,14 @@ export function AddPersonDialog({ onAddPerson }: AddPersonDialogProps) {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 required
-                className="text-base"
+                className="h-11 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-amber-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-zinc-300">
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -126,12 +134,14 @@ export function AddPersonDialog({ onAddPerson }: AddPersonDialogProps) {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                className="text-base"
+                className="h-11 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-amber-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone" className="text-zinc-300">
+                Phone
+              </Label>
               <Input
                 id="phone"
                 type="tel"
@@ -140,23 +150,28 @@ export function AddPersonDialog({ onAddPerson }: AddPersonDialogProps) {
                 onChange={(e) =>
                   setFormData({ ...formData, phone: e.target.value })
                 }
-                className="text-base"
+                className="h-11 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-amber-500"
               />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="gender">Gender</Label>
+                <Label htmlFor="gender" className="text-zinc-300">
+                  Gender
+                </Label>
                 <Select
                   value={formData.gender}
                   onValueChange={(value: "male" | "female") =>
                     setFormData({ ...formData, gender: value })
                   }
                 >
-                  <SelectTrigger id="gender">
+                  <SelectTrigger
+                    id="gender"
+                    className="h-11 bg-zinc-800/50 border-zinc-700 text-white"
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-zinc-900 border-zinc-800">
                     <SelectItem value="male">Male</SelectItem>
                     <SelectItem value="female">Female</SelectItem>
                   </SelectContent>
@@ -164,47 +179,55 @@ export function AddPersonDialog({ onAddPerson }: AddPersonDialogProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="priority">Priority</Label>
+                <Label htmlFor="priority" className="text-zinc-300">
+                  Priority
+                </Label>
                 <Select
                   value={formData.priority}
                   onValueChange={(value: "high" | "normal" | "low") =>
                     setFormData({ ...formData, priority: value })
                   }
                 >
-                  <SelectTrigger id="priority">
+                  <SelectTrigger
+                    id="priority"
+                    className="h-11 bg-zinc-800/50 border-zinc-700 text-white"
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-zinc-900 border-zinc-800">
                     <SelectItem value="high">High Priority</SelectItem>
                     <SelectItem value="normal">Normal Priority</SelectItem>
                     <SelectItem value="low">Low Priority</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-zinc-500">
                   Higher priority = more likely to be assigned
                 </p>
               </div>
             </div>
 
             <div className="space-y-3">
-              <Label>Ministries</Label>
-              <div className="space-y-3 rounded-lg border p-4">
+              <Label className="text-zinc-300">Ministries</Label>
+              <div className="space-y-3 rounded-xl border border-zinc-800 bg-zinc-800/30 p-4">
                 {MINISTRIES.map((ministry) => (
-                  <div key={ministry.value} className="flex items-start space-x-3">
+                  <div
+                    key={ministry.value}
+                    className="flex items-start space-x-3"
+                  >
                     <Checkbox
                       id={`ministry-${ministry.value}`}
                       checked={formData.ministries.includes(ministry.value)}
                       onCheckedChange={() => toggleMinistry(ministry.value)}
-                      className="mt-1"
+                      className="mt-1 border-zinc-600 data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
                     />
                     <div className="flex-1 space-y-0.5">
                       <label
                         htmlFor={`ministry-${ministry.value}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                        className="text-sm font-medium leading-none cursor-pointer text-white"
                       >
                         {ministry.label}
                       </label>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-zinc-500">
                         {ministry.description}
                       </p>
                     </div>
@@ -219,14 +242,19 @@ export function AddPersonDialog({ onAddPerson }: AddPersonDialogProps) {
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
+              className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
             >
               Cancel
             </Button>
-            <Button type="submit">Add Person</Button>
+            <Button
+              type="submit"
+              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-zinc-900 font-semibold"
+            >
+              Add Person
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
 }
-

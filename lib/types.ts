@@ -11,15 +11,21 @@ export type Ministry =
 
 export interface Person {
   id: string;
+  church_id: string;
   name: string;
   phone?: string;
   email?: string;
   ministries: Ministry[];
   gender: "male" | "female";
-  isActive: boolean;
-  isExemptFromAutoSchedule?: boolean; // Don't include in auto-scheduling
-  priority?: "high" | "normal" | "low"; // Higher priority = more likely to be assigned
-  createdAt: Date;
+  is_active: boolean;
+  is_exempt: boolean;
+  priority: "high" | "normal" | "low";
+  created_at: Date;
+  updated_at: Date;
+  // Aliases for backwards compatibility
+  isActive?: boolean;
+  isExempt?: boolean;
+  createdAt?: Date;
 }
 
 export type ServiceType = "sunday_morning" | "sunday_evening" | "midweek" | "special";
@@ -67,6 +73,59 @@ export interface Song {
   createdAt: Date;
 }
 
+// V2 Multi-tenant types
+export type MemberRole = "owner" | "admin" | "member";
+
+export interface Profile {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url?: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface Church {
+  id: string;
+  name: string;
+  logo?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  owner_id: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface ChurchMember {
+  id: string;
+  church_id: string;
+  user_id: string;
+  role: MemberRole;
+  joined_at: Date;
+  updated_at: Date;
+}
+
+export interface Invitation {
+  id: string;
+  church_id: string;
+  email: string;
+  role: "admin" | "member";
+  invited_by: string;
+  status: "pending" | "accepted" | "expired" | "cancelled";
+  expires_at: Date;
+  created_at: Date;
+}
+
+export interface MyChurch {
+  church_id: string;
+  church_name: string;
+  role: MemberRole;
+  member_count: number;
+}
+
+// Legacy type for backwards compatibility
 export interface Manager {
   id: string;
   email: string;

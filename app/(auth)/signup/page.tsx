@@ -4,32 +4,87 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Church } from "lucide-react";
+import { Church, ArrowRight, Mail, Lock, User } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const router = useRouter();
+  const supabase = createClient();
   const [formData, setFormData] = useState({
     name: "",
-    churchName: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      const errorMsg = "Passwords do not match";
+      setError(errorMsg);
+      toast.error(errorMsg);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      const errorMsg = "Password must be at least 6 characters";
+      setError(errorMsg);
+      toast.error(errorMsg);
+      return;
+    }
+
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email.trim(),
+        password: formData.password,
+        options: {
+          data: {
+            name: formData.name.trim(),
+          },
+        },
+      });
+
+      if (authError) {
+        setError(authError.message);
+        toast.error("Signup failed", {
+          description: authError.message,
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      if (!authData.user) {
+        const errorMsg = "Failed to create account";
+        setError(errorMsg);
+        toast.error(errorMsg);
+        setIsLoading(false);
+        return;
+      }
+
+      toast.success("Check your email!", {
+        description: "We sent you a confirmation link. Click it to activate your account.",
+        duration: 8000,
+      });
+
+      setTimeout(() => {
+        router.push("/login?message=confirm-email");
+      }, 2000);
+    } catch (err) {
+      console.error("Signup error:", err);
+      const message = err instanceof Error ? err.message : "An error occurred";
+      setError(message);
+      toast.error("Signup failed", { description: message });
       setIsLoading(false);
-      // For now, just redirect to dashboard
-      router.push("/dashboard");
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,119 +95,148 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Logo/Header */}
-      <div className="flex flex-col items-center text-center space-y-2">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-          <Church className="w-8 h-8 text-primary" />
-        </div>
-        <h1 className="text-2xl font-bold">ServeHub</h1>
-        <p className="text-muted-foreground text-sm">
-          Get started with ministry scheduling
-        </p>
+    <div className="min-h-screen bg-zinc-950 text-white flex flex-col">
+      {/* Background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl" />
       </div>
 
-      {/* Signup Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Create account</CardTitle>
-          <CardDescription>
-            Set up your church ministry scheduling
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSignup}>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Your Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="text-base"
-              />
+      {/* Content */}
+      <div className="relative flex-1 flex flex-col items-center justify-center p-6">
+        <div className="w-full max-w-sm">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 mb-4 shadow-lg shadow-amber-500/25">
+              <Church className="w-8 h-8 text-zinc-900" />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="churchName">Church Name</Label>
-              <Input
-                id="churchName"
-                type="text"
-                placeholder="Grace Community Church"
-                value={formData.churchName}
-                onChange={handleChange}
-                required
-                className="text-base"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="manager@church.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                className="text-base"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="text-base"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="text-base"
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button 
-              type="submit" 
-              className="w-full h-11" 
-              disabled={isLoading}
-            >
-              {isLoading ? "Creating account..." : "Create account"}
-            </Button>
-            <p className="text-sm text-center text-muted-foreground">
-              Already have an account?{" "}
-              <Link 
-                href="/login" 
-                className="text-primary font-medium hover:underline"
-              >
-                Sign in
-              </Link>
+            <h1 className="text-2xl font-bold mb-1">Create account</h1>
+            <p className="text-zinc-400 text-sm">
+              Get started with ServeHub
             </p>
-          </CardFooter>
-        </form>
-      </Card>
+          </div>
 
-      {/* Demo Notice */}
-      <Card className="border-primary/50 bg-primary/5">
-        <CardContent className="pt-6">
-          <p className="text-sm text-center text-muted-foreground">
-            <span className="font-medium text-foreground">Demo Mode:</span> Fill in any details to continue
+          {/* Form */}
+          <div className="bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 rounded-2xl p-6 shadow-2xl">
+            <form onSubmit={handleSignup} className="space-y-4">
+              {error && (
+                <div className="p-3 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-xl">
+                  {error}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-medium text-zinc-300">
+                  Your Name
+                </Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="John Doe"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                    className="h-11 pl-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:ring-amber-500/20 text-base"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium text-zinc-300">
+                  Email
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="you@church.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                    className="h-11 pl-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:ring-amber-500/20 text-base"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium text-zinc-300">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                    minLength={6}
+                    className="h-11 pl-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:ring-amber-500/20 text-base"
+                  />
+                </div>
+                <p className="text-xs text-zinc-500 pl-1">
+                  Must be at least 6 characters
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-sm font-medium text-zinc-300">
+                  Confirm Password
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                    className="h-11 pl-10 bg-zinc-800/50 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-amber-500 focus:ring-amber-500/20 text-base"
+                  />
+                </div>
+              </div>
+
+              <Button 
+                type="submit" 
+                className="w-full h-11 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-zinc-900 font-semibold shadow-lg shadow-amber-500/25 transition-all duration-200 hover:shadow-amber-500/40 hover:scale-[1.02] active:scale-[0.98] mt-2" 
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-zinc-900 border-t-transparent rounded-full animate-spin" />
+                    Creating account...
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    Create account
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                )}
+              </Button>
+            </form>
+          </div>
+
+          {/* Sign in link */}
+          <p className="text-center text-sm text-zinc-400 mt-6">
+            Already have an account?{" "}
+            <Link 
+              href="/login" 
+              className="text-amber-400 font-medium hover:text-amber-300 transition-colors"
+            >
+              Sign in
+            </Link>
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
-

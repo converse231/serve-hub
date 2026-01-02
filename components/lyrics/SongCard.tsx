@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Music, Edit, Trash2, Eye, Calendar } from "lucide-react";
@@ -26,98 +25,95 @@ export function SongCard({ song, onView, onEdit, onDelete }: SongCardProps) {
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
-              <Music className="w-4 h-4 text-primary flex-shrink-0" />
-              <h3 className="font-semibold text-lg truncate">{song.title}</h3>
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 transition-all duration-200 hover:bg-zinc-900/80 hover:border-zinc-700">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="p-1.5 rounded-lg bg-violet-500/10">
+              <Music className="w-4 h-4 text-violet-400" />
             </div>
-            {song.artist && (
-              <p className="text-sm text-muted-foreground truncate">
-                {song.artist}
-              </p>
-            )}
+            <h3 className="font-semibold text-white truncate">{song.title}</h3>
           </div>
-          <div className="flex gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => onView(song)}
-            >
-              <Eye className="w-4 h-4" />
-              <span className="sr-only">View</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={() => onEdit(song)}
-            >
-              <Edit className="w-4 h-4" />
-              <span className="sr-only">Edit</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-destructive hover:text-destructive"
-              onClick={() => onDelete(song.id)}
-            >
-              <Trash2 className="w-4 h-4" />
-              <span className="sr-only">Delete</span>
-            </Button>
-          </div>
+          {song.artist && (
+            <p className="text-sm text-zinc-400 truncate pl-8">
+              {song.artist}
+            </p>
+          )}
         </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {/* Metadata */}
-        <div className="flex flex-wrap gap-2">
-          {song.key && (
-            <Badge variant="outline" className="gap-1">
-              <Music className="w-3 h-3" />
-              Key: {song.key}
-            </Badge>
-          )}
-          {song.tempo && (
-            <Badge variant="outline">{song.tempo}</Badge>
-          )}
-          <Badge variant="secondary">
-            {getLanguageLabel(song.language)}
+        <div className="flex gap-0.5">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800"
+            onClick={() => onView(song)}
+          >
+            <Eye className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-zinc-500 hover:text-white hover:bg-zinc-800"
+            onClick={() => onEdit(song)}
+          >
+            <Edit className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-zinc-500 hover:text-red-400 hover:bg-red-500/10"
+            onClick={() => onDelete(song.id)}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Metadata */}
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {song.key && (
+          <Badge className="bg-zinc-800 text-zinc-300 border-zinc-700">
+            Key: {song.key}
           </Badge>
-          {song.genre && (
-            <Badge className="bg-primary/10 text-primary hover:bg-primary/20">
-              {getGenreLabel(song.genre)}
+        )}
+        {song.tempo && (
+          <Badge className="bg-zinc-800 text-zinc-300 border-zinc-700 capitalize">
+            {song.tempo}
+          </Badge>
+        )}
+        <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/30">
+          {getLanguageLabel(song.language)}
+        </Badge>
+        {song.genre && (
+          <Badge className="bg-violet-500/10 text-violet-400 border-violet-500/30 capitalize">
+            {getGenreLabel(song.genre)}
+          </Badge>
+        )}
+      </div>
+
+      {/* Last Sang */}
+      {song.lastSang && (
+        <div className="flex items-center gap-2 text-xs text-zinc-500 mb-3">
+          <Calendar className="w-3 h-3" />
+          <span>Last sang: {format(song.lastSang, "MMM d, yyyy")}</span>
+        </div>
+      )}
+
+      {/* Lyrics Preview */}
+      <div className="text-sm text-zinc-400 line-clamp-2 mb-3 border-l-2 border-zinc-700 pl-3">
+        {song.lyrics.split('\n')[0]}...
+      </div>
+
+      {/* Tags */}
+      {song.tags && song.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1 pt-2 border-t border-zinc-800">
+          {song.tags.map((tag) => (
+            <Badge key={tag} className="bg-zinc-800/50 text-zinc-400 border-zinc-700 text-xs">
+              #{tag}
             </Badge>
-          )}
+          ))}
         </div>
-
-        {/* Last Sang */}
-        {song.lastSang && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Calendar className="w-3 h-3" />
-            <span>Last sang: {format(song.lastSang, "MMM d, yyyy")}</span>
-          </div>
-        )}
-
-        {/* Lyrics Preview */}
-        <div className="text-sm text-muted-foreground line-clamp-2">
-          {song.lyrics.split('\n')[0]}...
-        </div>
-
-        {/* Tags */}
-        {song.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {song.tags.map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs">
-                #{tag}
-              </Badge>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }
-

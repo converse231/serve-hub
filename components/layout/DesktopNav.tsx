@@ -22,7 +22,7 @@ const navItems = [
     icon: Calendar,
   },
   {
-    label: "Lyrics",
+    label: "Songs",
     href: "/dashboard/lyrics",
     icon: Music,
   },
@@ -37,7 +37,7 @@ export function DesktopNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="hidden md:flex items-center gap-1 ml-4">
+    <nav className="hidden md:flex items-center gap-1 ml-6">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         const Icon = item.icon;
@@ -47,10 +47,10 @@ export function DesktopNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
+              "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
               isActive 
-                ? "bg-primary/10 text-primary" 
-                : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                ? "bg-amber-500/10 text-amber-400" 
+                : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
             )}
           >
             <Icon className="w-4 h-4" />
@@ -61,4 +61,3 @@ export function DesktopNav() {
     </nav>
   );
 }
-

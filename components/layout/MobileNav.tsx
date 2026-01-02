@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   {
-    label: "Dashboard",
+    label: "Home",
     href: "/dashboard",
     icon: Home,
   },
@@ -22,7 +22,7 @@ const navItems = [
     icon: Calendar,
   },
   {
-    label: "Lyrics",
+    label: "Songs",
     href: "/dashboard/lyrics",
     icon: Music,
   },
@@ -37,7 +37,7 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-zinc-900/95 backdrop-blur-xl border-t border-zinc-800 md:hidden safe-area-pb">
       <div className="flex items-center justify-around h-16 px-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
@@ -48,15 +48,25 @@ export function MobileNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center flex-1 h-full gap-1 transition-colors",
-                "min-w-[60px] active:bg-muted/50", // Touch feedback
+                "flex flex-col items-center justify-center flex-1 h-full gap-1 transition-all duration-200",
+                "min-w-[60px] active:scale-95",
                 isActive 
-                  ? "text-primary" 
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-amber-400" 
+                  : "text-zinc-500 hover:text-zinc-300"
               )}
             >
-              <Icon className={cn("w-5 h-5", isActive && "fill-primary/20")} />
-              <span className="text-xs font-medium">{item.label}</span>
+              <div className={cn(
+                "p-1.5 rounded-lg transition-colors",
+                isActive && "bg-amber-500/10"
+              )}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <span className={cn(
+                "text-[10px] font-medium",
+                isActive && "text-amber-400"
+              )}>
+                {item.label}
+              </span>
             </Link>
           );
         })}
@@ -64,4 +74,3 @@ export function MobileNav() {
     </nav>
   );
 }
-
